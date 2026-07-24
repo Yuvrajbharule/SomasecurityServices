@@ -1,564 +1,493 @@
-"use strict";
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-/* =========================================================
-   SOMA SECURITY SERVICES
-   Main JavaScript
-========================================================= */
+        /* ==============================
+           HERO SLIDER
+        ============================== */
 
-document.addEventListener("DOMContentLoaded", () => {
-
-    /* =====================================================
-       1. HERO IMAGE SLIDER
-    ===================================================== */
-
-    const slides = document.querySelectorAll(".hero .slide");
-    let currentSlide = 0;
-    let slideInterval;
-
-    function showSlide(index) {
-
-        if (!slides.length) return;
-
-        slides.forEach((slide) => {
-            slide.classList.remove("active");
-        });
-
-        slides[index].classList.add("active");
-    }
-
-    function nextSlide() {
-
-        if (!slides.length) return;
-
-        currentSlide = (currentSlide + 1) % slides.length;
-
-        showSlide(currentSlide);
-    }
-
-    function startSlider() {
-
-        if (slides.length <= 1) return;
-
-        slideInterval = setInterval(nextSlide, 5500);
-    }
-
-    if (slides.length) {
-
-        showSlide(0);
-
-        startSlider();
-
-    }
-
-
-    /* =====================================================
-       2. MOBILE NAVIGATION
-    ===================================================== */
-
-    const menuToggle = document.getElementById("menuToggle");
-    const mainNav = document.getElementById("mainNav");
-
-    if (menuToggle && mainNav) {
-
-        menuToggle.addEventListener("click", () => {
-
-            menuToggle.classList.toggle("active");
-
-            mainNav.classList.toggle("active");
-
-            document.body.classList.toggle(
-                "menu-open",
-                mainNav.classList.contains("active")
+        const slides =
+            document.querySelectorAll(
+                ".hero-slide"
             );
 
-        });
+        let currentSlide = 0;
 
-    }
+        function showNextSlide() {
 
-
-    /* =====================================================
-       3. CLOSE MOBILE MENU AFTER LINK CLICK
-    ===================================================== */
-
-    const navLinks = document.querySelectorAll(".nav-link");
-
-    navLinks.forEach((link) => {
-
-        link.addEventListener("click", () => {
-
-            if (mainNav) {
-                mainNav.classList.remove("active");
-            }
-
-            if (menuToggle) {
-                menuToggle.classList.remove("active");
-            }
-
-            document.body.classList.remove("menu-open");
-
-        });
-
-    });
-
-
-    /* =====================================================
-       4. CLOSE MOBILE MENU WHEN CLICKING OUTSIDE
-    ===================================================== */
-
-    document.addEventListener("click", (event) => {
-
-        if (!mainNav || !menuToggle) return;
-
-        const clickedInsideNav =
-            mainNav.contains(event.target);
-
-        const clickedMenuButton =
-            menuToggle.contains(event.target);
-
-        if (
-            mainNav.classList.contains("active") &&
-            !clickedInsideNav &&
-            !clickedMenuButton
-        ) {
-
-            mainNav.classList.remove("active");
-
-            menuToggle.classList.remove("active");
-
-            document.body.classList.remove("menu-open");
-
-        }
-
-    });
-
-
-    /* =====================================================
-       5. CLOSE MENU WITH ESC KEY
-    ===================================================== */
-
-    document.addEventListener("keydown", (event) => {
-
-        if (event.key !== "Escape") return;
-
-        if (mainNav) {
-            mainNav.classList.remove("active");
-        }
-
-        if (menuToggle) {
-            menuToggle.classList.remove("active");
-        }
-
-        document.body.classList.remove("menu-open");
-
-    });
-
-
-    /* =====================================================
-       6. STICKY HEADER EFFECT
-    ===================================================== */
-
-    const header =
-        document.querySelector(".main-header");
-
-    function updateHeader() {
-
-        if (!header) return;
-
-        if (window.scrollY > 40) {
-
-            header.classList.add("scrolled");
-
-        } else {
-
-            header.classList.remove("scrolled");
-
-        }
-
-    }
-
-    updateHeader();
-
-    window.addEventListener(
-        "scroll",
-        updateHeader,
-        { passive: true }
-    );
-
-
-    /* =====================================================
-       7. SMOOTH SCROLL
-    ===================================================== */
-
-    const anchorLinks =
-        document.querySelectorAll('a[href^="#"]');
-
-    anchorLinks.forEach((anchor) => {
-
-        anchor.addEventListener("click", function (event) {
-
-            const targetId =
-                this.getAttribute("href");
-
-            if (
-                !targetId ||
-                targetId === "#"
-            ) {
-
-                if (targetId === "#") {
-
-                    event.preventDefault();
-
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth"
-                    });
-
-                }
-
+            if (slides.length <= 1) {
                 return;
             }
 
-            const target =
-                document.querySelector(targetId);
+            slides[currentSlide]
+                .classList.remove("active");
 
-            if (!target) return;
+            currentSlide =
+                (currentSlide + 1)
+                % slides.length;
 
-            event.preventDefault();
+            slides[currentSlide]
+                .classList.add("active");
+        }
 
-            const headerHeight =
-                header
-                    ? header.offsetHeight
-                    : 0;
+        if (slides.length > 1) {
 
-            const targetPosition =
-                target.getBoundingClientRect().top +
-                window.pageYOffset -
-                headerHeight;
+            setInterval(
+                showNextSlide,
+                5500
+            );
 
-            window.scrollTo({
-
-                top: targetPosition,
-
-                behavior: "smooth"
-
-            });
-
-        });
-
-    });
+        }
 
 
-    /* =====================================================
-       8. ACTIVE NAVIGATION LINK ON SCROLL
-    ===================================================== */
+        /* ==============================
+           HEADER SCROLL
+        ============================== */
 
-    const sections =
-        document.querySelectorAll(
-            "main section[id]"
+        const header =
+            document.getElementById(
+                "header"
+            );
+
+        function handleHeader() {
+
+            if (!header) return;
+
+            if (window.scrollY > 30) {
+
+                header.classList.add(
+                    "scrolled"
+                );
+
+            } else {
+
+                header.classList.remove(
+                    "scrolled"
+                );
+
+            }
+
+        }
+
+        handleHeader();
+
+        window.addEventListener(
+            "scroll",
+            handleHeader,
+            { passive: true }
         );
 
-    function updateActiveNavigation() {
 
-        if (!sections.length) return;
+        /* ==============================
+           MOBILE MENU
+        ============================== */
 
-        const scrollPosition =
-            window.scrollY + 180;
+        const menuButton =
+            document.getElementById(
+                "menuButton"
+            );
 
-        let currentSection = "home";
+        const nav =
+            document.getElementById(
+                "nav"
+            );
 
-        sections.forEach((section) => {
+        if (menuButton && nav) {
 
-            const sectionTop =
-                section.offsetTop;
+            menuButton.addEventListener(
+                "click",
+                function () {
 
-            const sectionHeight =
-                section.offsetHeight;
+                    nav.classList.toggle(
+                        "open"
+                    );
 
-            const sectionId =
-                section.getAttribute("id");
+                    menuButton.classList.toggle(
+                        "active"
+                    );
 
-            if (
-                scrollPosition >= sectionTop &&
-                scrollPosition <
-                sectionTop + sectionHeight
-            ) {
+                    document.body
+                        .classList.toggle(
+                            "menu-open",
+                            nav.classList.contains(
+                                "open"
+                            )
+                        );
 
-                currentSection = sectionId;
+                }
+            );
 
-            }
-
-        });
-
-        navLinks.forEach((link) => {
-
-            link.classList.remove("active");
-
-            const href =
-                link.getAttribute("href");
-
-            if (
-                href === `#${currentSection}`
-            ) {
-
-                link.classList.add("active");
-
-            }
-
-        });
-
-    }
-
-    window.addEventListener(
-        "scroll",
-        updateActiveNavigation,
-        { passive: true }
-    );
-
-    updateActiveNavigation();
+        }
 
 
-    /* =====================================================
-       9. SCROLL REVEAL ANIMATION
-    ===================================================== */
+        /* ==============================
+           SMOOTH SCROLL
+        ============================== */
 
-    const revealElements =
-        document.querySelectorAll(".reveal");
+        const internalLinks =
+            document.querySelectorAll(
+                'a[href^="#"]'
+            );
 
-    if (
-        "IntersectionObserver" in window
-    ) {
+        internalLinks.forEach(
+            function (link) {
 
-        const revealObserver =
-            new IntersectionObserver(
+                link.addEventListener(
+                    "click",
+                    function (event) {
 
-                (entries, observer) => {
-
-                    entries.forEach((entry) => {
-
-                        if (
-                            entry.isIntersecting
-                        ) {
-
-                            entry.target.classList.add(
-                                "visible"
+                        const id =
+                            link.getAttribute(
+                                "href"
                             );
 
-                            observer.unobserve(
-                                entry.target
+                        if (
+                            !id ||
+                            id === "#"
+                        ) {
+
+                            return;
+
+                        }
+
+                        const target =
+                            document.querySelector(
+                                id
+                            );
+
+                        if (!target) return;
+
+                        event.preventDefault();
+
+                        const headerHeight =
+                            header
+                                ? header.offsetHeight
+                                : 0;
+
+                        const position =
+                            target
+                                .getBoundingClientRect()
+                                .top
+                            +
+                            window.pageYOffset
+                            -
+                            headerHeight;
+
+                        window.scrollTo({
+
+                            top: position,
+
+                            behavior:
+                                "smooth"
+
+                        });
+
+
+                        if (nav) {
+
+                            nav.classList.remove(
+                                "open"
                             );
 
                         }
 
-                    });
+                        if (menuButton) {
 
-                },
+                            menuButton
+                                .classList.remove(
+                                    "active"
+                                );
 
-                {
+                        }
 
-                    threshold: 0.12,
+                        document.body
+                            .classList.remove(
+                                "menu-open"
+                            );
 
-                    rootMargin:
-                        "0px 0px -40px 0px"
+                    }
+                );
 
-                }
+            }
+        );
 
+
+        /* ==============================
+           ACTIVE NAV LINK
+        ============================== */
+
+        const navLinks =
+            document.querySelectorAll(
+                ".nav-link"
             );
 
-        revealElements.forEach(
-            (element) => {
+        const sections =
+            document.querySelectorAll(
+                "main section[id]"
+            );
 
-                revealObserver.observe(
-                    element
-                );
+        function updateActiveLink() {
 
-            }
-        );
+            let current =
+                "home";
 
-    } else {
+            const position =
+                window.scrollY + 180;
 
-        revealElements.forEach(
-            (element) => {
+            sections.forEach(
+                function (section) {
 
-                element.classList.add(
-                    "visible"
-                );
+                    const top =
+                        section.offsetTop;
 
-            }
-        );
+                    const height =
+                        section.offsetHeight;
 
-    }
+                    if (
+                        position >= top &&
+                        position <
+                        top + height
+                    ) {
 
+                        current =
+                            section.id;
 
-    /* =====================================================
-       10. STAGGER ANIMATION
-    ===================================================== */
+                    }
 
-    const staggerContainers = [
+                }
+            );
 
-        ".services-grid",
-        ".stats-grid",
-        ".why-features",
-        ".process-grid"
+            navLinks.forEach(
+                function (link) {
 
-    ];
+                    link.classList.remove(
+                        "active"
+                    );
 
-    staggerContainers.forEach(
-        (selector) => {
+                    if (
+                        link.getAttribute(
+                            "href"
+                        ) ===
+                        "#" + current
+                    ) {
 
-            const container =
-                document.querySelector(selector);
+                        link.classList.add(
+                            "active"
+                        );
 
-            if (!container) return;
-
-            const revealChildren =
-                container.querySelectorAll(
-                    ".reveal"
-                );
-
-            revealChildren.forEach(
-                (element, index) => {
-
-                    element.style.transitionDelay =
-                        `${index * 80}ms`;
+                    }
 
                 }
             );
 
         }
-    );
 
-
-    /* =====================================================
-       11. WHATSAPP ENQUIRY FORM
-    ===================================================== */
-
-    const enquiryForm =
-        document.getElementById(
-            "enquiryForm"
+        window.addEventListener(
+            "scroll",
+            updateActiveLink,
+            { passive: true }
         );
 
-    if (enquiryForm) {
+        updateActiveLink();
 
-        enquiryForm.addEventListener(
-            "submit",
-            function (event) {
 
-                event.preventDefault();
+        /* ==============================
+           REVEAL ANIMATION
+        ============================== */
 
-                const nameInput =
-                    document.getElementById(
-                        "name"
+        const reveals =
+            document.querySelectorAll(
+                ".reveal"
+            );
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+            const observer =
+                new IntersectionObserver(
+
+                    function (
+                        entries,
+                        observerInstance
+                    ) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target
+                                        .classList.add(
+                                            "visible"
+                                        );
+
+                                    observerInstance
+                                        .unobserve(
+                                            entry.target
+                                        );
+
+                                }
+
+                            }
+                        );
+
+                    },
+
+                    {
+                        threshold: 0.1,
+
+                        rootMargin:
+                            "0px 0px -30px 0px"
+                    }
+
+                );
+
+            reveals.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
                     );
-
-                const phoneInput =
-                    document.getElementById(
-                        "phone"
-                    );
-
-                const serviceInput =
-                    document.getElementById(
-                        "service"
-                    );
-
-                const messageInput =
-                    document.getElementById(
-                        "message"
-                    );
-
-
-                const name =
-                    nameInput
-                        ? nameInput.value.trim()
-                        : "";
-
-                const phone =
-                    phoneInput
-                        ? phoneInput.value.trim()
-                        : "";
-
-                const service =
-                    serviceInput
-                        ? serviceInput.value
-                        : "";
-
-                const message =
-                    messageInput
-                        ? messageInput.value.trim()
-                        : "";
-
-
-                /* -----------------------------
-                   BASIC VALIDATION
-                ----------------------------- */
-
-                if (!name) {
-
-                    showFormMessage(
-                        "Please enter your name.",
-                        "error"
-                    );
-
-                    nameInput?.focus();
-
-                    return;
 
                 }
+            );
 
+        } else {
 
-                if (!phone) {
+            reveals.forEach(
+                function (element) {
 
-                    showFormMessage(
-                        "Please enter your phone number.",
-                        "error"
+                    element.classList.add(
+                        "visible"
                     );
 
-                    phoneInput?.focus();
-
-                    return;
-
                 }
+            );
+
+        }
 
 
-                const cleanPhone =
-                    phone.replace(/\D/g, "");
+        /* ==============================
+           WHATSAPP ENQUIRY
+        ============================== */
+
+        const form =
+            document.getElementById(
+                "enquiryForm"
+            );
+
+        const status =
+            document.getElementById(
+                "formStatus"
+            );
+
+        function showStatus(
+            message,
+            type
+        ) {
+
+            if (!status) return;
+
+            status.textContent =
+                message;
+
+            status.className =
+                "form-status show "
+                + type;
+
+        }
 
 
-                if (
-                    cleanPhone.length < 10
-                ) {
+        if (form) {
 
-                    showFormMessage(
-                        "Please enter a valid phone number.",
-                        "error"
-                    );
+            form.addEventListener(
+                "submit",
+                function (event) {
 
-                    phoneInput?.focus();
+                    event.preventDefault();
 
-                    return;
+                    const name =
+                        document
+                            .getElementById(
+                                "name"
+                            )
+                            .value
+                            .trim();
 
-                }
+                    const phone =
+                        document
+                            .getElementById(
+                                "phone"
+                            )
+                            .value
+                            .trim();
+
+                    const service =
+                        document
+                            .getElementById(
+                                "service"
+                            )
+                            .value;
+
+                    const message =
+                        document
+                            .getElementById(
+                                "message"
+                            )
+                            .value
+                            .trim();
 
 
-                if (!service) {
+                    if (!name) {
 
-                    showFormMessage(
-                        "Please select a security service.",
-                        "error"
-                    );
+                        showStatus(
+                            "Please enter your name.",
+                            "error"
+                        );
 
-                    serviceInput?.focus();
+                        return;
 
-                    return;
-
-                }
+                    }
 
 
-                /* -----------------------------
-                   CREATE WHATSAPP MESSAGE
-                ----------------------------- */
+                    const cleanPhone =
+                        phone.replace(
+                            /\D/g,
+                            ""
+                        );
 
-                let whatsappMessage =
 
+                    if (
+                        cleanPhone.length < 10
+                    ) {
+
+                        showStatus(
+                            "Please enter a valid phone number.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (!service) {
+
+                        showStatus(
+                            "Please select a security service.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    let text =
 `Hello Soma Security Services,
 
 I would like to enquire about your security services.
@@ -567,305 +496,123 @@ Name: ${name}
 Phone: ${phone}
 Service Required: ${service}`;
 
-                if (message) {
 
-                    whatsappMessage +=
+                    if (message) {
 
+                        text +=
 `
 
 Requirement Details:
 ${message}`;
 
-                }
+                    }
 
-                whatsappMessage +=
 
+                    text +=
 `
 
-Please contact me with more information.
+Please contact me regarding this requirement.
 
 Thank you.`;
 
 
-                const businessNumber =
-                    "919657914714";
+                    const url =
+                        "https://wa.me/919657914714?text="
+                        +
+                        encodeURIComponent(
+                            text
+                        );
 
 
-                const whatsappURL =
-                    `https://wa.me/${businessNumber}?text=${encodeURIComponent(
-                        whatsappMessage
-                    )}`;
-
-
-                showFormMessage(
-                    "Opening WhatsApp...",
-                    "success"
-                );
-
-
-                /* Open WhatsApp */
-
-                setTimeout(() => {
-
-                    window.open(
-                        whatsappURL,
-                        "_blank",
-                        "noopener,noreferrer"
+                    showStatus(
+                        "Opening WhatsApp...",
+                        "success"
                     );
 
-                }, 350);
 
-            }
-        );
+                    setTimeout(
+                        function () {
 
-    }
+                            window.open(
+                                url,
+                                "_blank"
+                            );
 
+                        },
+                        300
+                    );
 
-    /* =====================================================
-       12. FORM STATUS MESSAGE
-    ===================================================== */
-
-    function showFormMessage(
-        message,
-        type = "success"
-    ) {
-
-        if (!enquiryForm) return;
-
-        let statusMessage =
-            enquiryForm.querySelector(
-                ".form-status"
-            );
-
-        if (!statusMessage) {
-
-            statusMessage =
-                document.createElement(
-                    "div"
-                );
-
-            statusMessage.className =
-                "form-status";
-
-            enquiryForm.appendChild(
-                statusMessage
+                }
             );
 
         }
 
-        statusMessage.textContent =
-            message;
 
-        statusMessage.className =
-            `form-status ${type}`;
+        /* ==============================
+           PHONE INPUT
+        ============================== */
 
-        statusMessage.classList.add(
-            "show"
-        );
+        const phoneInput =
+            document.getElementById(
+                "phone"
+            );
+
+        if (phoneInput) {
+
+            phoneInput.addEventListener(
+                "input",
+                function () {
+
+                    phoneInput.value =
+                        phoneInput.value.replace(
+                            /[^0-9+\s()-]/g,
+                            ""
+                        );
+
+                }
+            );
+
+        }
 
 
-        clearTimeout(
-            statusMessage.hideTimer
-        );
+        /* ==============================
+           RESIZE
+        ============================== */
 
-
-        statusMessage.hideTimer =
-            setTimeout(() => {
-
-                statusMessage.classList.remove(
-                    "show"
-                );
-
-            }, 5000);
-
-    }
-
-
-    /* =====================================================
-       13. PHONE INPUT - ALLOW VALID CHARACTERS
-    ===================================================== */
-
-    const phoneInput =
-        document.getElementById("phone");
-
-    if (phoneInput) {
-
-        phoneInput.addEventListener(
-            "input",
+        window.addEventListener(
+            "resize",
             function () {
 
-                this.value =
-                    this.value.replace(
-                        /[^0-9+\s()-]/g,
-                        ""
-                    );
+                if (
+                    window.innerWidth > 900
+                ) {
 
-            }
-        );
+                    if (nav) {
 
-    }
-
-
-    /* =====================================================
-       14. PREVENT RAPID FORM SUBMISSION
-    ===================================================== */
-
-    let lastSubmitTime = 0;
-
-    if (enquiryForm) {
-
-        enquiryForm.addEventListener(
-            "submit",
-            () => {
-
-                lastSubmitTime =
-                    Date.now();
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       15. HERO PARALLAX EFFECT
-       Desktop only
-    ===================================================== */
-
-    let ticking = false;
-
-    function heroParallax() {
-
-        const hero =
-            document.querySelector(".hero");
-
-        if (!hero) return;
-
-        if (
-            window.innerWidth <= 768
-        ) {
-
-            slides.forEach((slide) => {
-
-                slide.style.transform = "";
-
-            });
-
-            return;
-
-        }
-
-        const scrollY =
-            window.scrollY;
-
-        const heroHeight =
-            hero.offsetHeight;
-
-        if (
-            scrollY <= heroHeight
-        ) {
-
-            slides.forEach((slide) => {
-
-                slide.style.transform =
-                    `scale(1.05) translateY(${scrollY * 0.08}px)`;
-
-            });
-
-        }
-
-    }
-
-
-    window.addEventListener(
-        "scroll",
-        () => {
-
-            if (!ticking) {
-
-                window.requestAnimationFrame(
-                    () => {
-
-                        heroParallax();
-
-                        ticking = false;
-
-                    }
-                );
-
-                ticking = true;
-
-            }
-
-        },
-
-        { passive: true }
-
-    );
-
-
-    /* =====================================================
-       16. BACK TO NORMAL ON WINDOW RESIZE
-    ===================================================== */
-
-    let resizeTimer;
-
-    window.addEventListener(
-        "resize",
-        () => {
-
-            clearTimeout(
-                resizeTimer
-            );
-
-            resizeTimer =
-                setTimeout(() => {
-
-                    /*
-                    Close mobile navigation
-                    when switching to desktop
-                    */
-
-                    if (
-                        window.innerWidth > 992
-                    ) {
-
-                        if (mainNav) {
-
-                            mainNav.classList.remove(
-                                "active"
-                            );
-
-                        }
-
-                        if (menuToggle) {
-
-                            menuToggle.classList.remove(
-                                "active"
-                            );
-
-                        }
-
-                        document.body.classList.remove(
-                            "menu-open"
+                        nav.classList.remove(
+                            "open"
                         );
 
                     }
 
-                    heroParallax();
+                    if (menuButton) {
 
-                }, 150);
+                        menuButton
+                            .classList.remove(
+                                "active"
+                            );
 
-        }
-    );
+                    }
 
+                    document.body
+                        .classList.remove(
+                            "menu-open"
+                        );
 
-    /* =====================================================
-       17. INITIAL PAGE SETUP
-    ===================================================== */
+                }
 
-    document.body.classList.add(
-        "page-loaded"
-    );
+            }
+        );
 
-});
+    }
+);
